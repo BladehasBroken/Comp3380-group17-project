@@ -60,29 +60,41 @@ def age_menu():
     print('Choose an option:')
     print('1. get all the age information')
     print('2. get population that below some age in one area ')
+    print('"b". Back to main menu')
 
 def boundary_menu():
     print('Choose an option:')
     print('1. get all the boundary information')
     print('2. get a list of boundary names ')
+    print('"b". Back to main menu')
 
 # do task when user select option under the age menu
 def age_choice():
-    ageChoice = input('Enter your choice (1-9): ')
-    if ageChoice == '1':
-        get_all_ages(conn)
-    elif ageChoice == '2':
-        age = int(input('Enter the age: '))
-        area = "'" + input('Enter the boundary name: ') + "'"
-        get_population_belowAges_area(conn, age, area)
+    while True:
+        age_menu()
+        ageChoice = input('Enter your choice (1-9): ')
+        if ageChoice == '1':
+            get_all_ages(conn)
+        elif ageChoice == '2':
+            age = int(input('Enter the age: '))
+            area = "'" + input('Enter the boundary name: ') + "'"
+            get_population_belowAges_area(conn, age, area)
+        elif ageChoice == 'b':
+            print("Back to main...")
+            break
 
 # do task when user select option under the age menu
 def boundary_choice():
-    boundary_chocie = input('Enter your choice (1-9): ')
-    if boundary_chocie == '1':
-        get_all_boundary(conn)
-    elif boundary_chocie == '2':
-        get_all_boundary_name(conn)
+    while True:
+        boundary_menu()
+        boundary_chocie = input('Enter your choice (1-9): ')
+        if boundary_chocie == '1':
+            get_all_boundary(conn)
+        elif boundary_chocie == '2':
+            get_all_boundary_name(conn)
+        elif boundary_chocie == 'b':
+            print("Back to main...")
+            break
 
 
 if __name__ == '__main__':
@@ -101,13 +113,9 @@ if __name__ == '__main__':
         choice = input('Enter your choice (1-9): ')
 
         if choice == '1':
-            while True:
-                age_menu()
-                age_choice()
+            age_choice()
         elif choice == '2':
-            while True:
-                boundary_menu()
-                boundary_choice()
+            boundary_choice()
         elif choice == '3':
             street = "'" + input('Enter the street name: ') + "'"
         elif choice == '4':
