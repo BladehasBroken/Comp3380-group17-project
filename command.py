@@ -37,13 +37,29 @@ def get_all_boundary_name(conn):
     query = 'select distinct Boundary_name from Boundary'
     query_database(conn,query)
 
-def fetch_all_tickets(conn):
-    query = 'SELECT * FROM parking;'
-    query_database(conn, query)
+def get_all_education(conn):
+    query = 'select * from Education'
+    query_database(conn,query)
 
-def fetch_ticket_by_id(conn, ticket_id):
-    query = f'SELECT * FROM parking WHERE ticketNo = {ticket_id};'
-    query_database(conn, query)
+def get_all_faith(conn):
+    query = 'select * from Faith'
+    query_database(conn,query)
+
+def get_all_language(conn):
+    query = 'select * from Language'
+    query_database(conn,query)
+
+def get_all_non_response_rate(conn):
+    query = 'select * from Non_Response_Rate'
+    query_database(conn,query)
+
+def get_all_response(conn):
+    query = 'select * from Response'
+    query_database(conn,query)
+
+def get_all_topic(conn):
+    query = 'select * from Topic'
+    query_database(conn,query)
 
 def main_menu():
     print('Choose an option:')
@@ -68,6 +84,30 @@ def boundary_menu():
     print('2. get a list of boundary names ')
     print('"b". Back to main menu')
 
+def educaiton_menu():
+    print('Choose an option:')
+    print('1. get all the education information')
+
+def faith_menu():
+    print('Choose an option:')
+    print('1. get all the faith information')
+
+def language_menu():
+    print('Choose an option:')
+    print('1. get all the language information')
+
+def non_response_rate_menu():
+    print('Choose an option:')
+    print('1. get all the non resposne rate information')
+
+def response_menu():
+    print('Choose an option:')
+    print('1. get all the response information')
+
+def topic_menu():
+    print('Choose an option:')
+    print('1. get all the topic information')
+
 # do task when user select option under the age menu
 def age_choice():
     while True:
@@ -87,15 +127,75 @@ def age_choice():
 def boundary_choice():
     while True:
         boundary_menu()
-        boundary_chocie = input('Enter your choice (1-9): ')
-        if boundary_chocie == '1':
+        boundaryChoice = input('Enter your choice (1-9): ')
+        if boundaryChoice == '1':
             get_all_boundary(conn)
-        elif boundary_chocie == '2':
+        elif boundaryChoice == '2':
             get_all_boundary_name(conn)
-        elif boundary_chocie == 'b':
+        elif boundaryChoice == 'b':
             print("Back to main...")
             break
 
+
+def education_choice():
+    while True:
+        educaiton_menu()
+        educationChoice = input('Enter your choice (1-9): ')
+        if educationChoice == '1':
+            get_all_education(conn)
+        elif educationChoice == 'b':
+            print("Back to main...")
+            break
+
+def faith_choice():
+    while True:
+        faith_menu()
+        faithChoice = input('Enter your choice (1-9): ')
+        if faithChoice == '1':
+            get_all_faith(conn)
+        elif faithChoice == 'b':
+            print("Back to main...")
+            break
+
+def language_choice():
+    while True:
+        language_menu()
+        languageChoice = input('Enter your choice (1-9): ')
+        if languageChoice == '1':
+            get_all_language(conn)
+        elif languageChoice == 'b':
+            print("Back to main...")
+            break
+
+def non_response_rate_choice():
+    while True:
+        non_response_rate_menu()
+        nonResponseRateChoice = input('Enter your choice (1-9): ')
+        if nonResponseRateChoice == '1':
+            get_all_non_response_rate(conn)
+        elif nonResponseRateChoice == 'b':
+            print("Back to main...")
+            break
+
+def response_choice():
+    while True:
+        response_menu()
+        responseChoice = input('Enter your choice (1-9): ')
+        if responseChoice == '1':
+            get_all_response(conn)
+        elif responseChoice == 'b':
+            print("Back to main...")
+            break
+
+def topic_choice():
+    while True:
+        topic_menu()
+        topicChoice = input('Enter your choice (1-9): ')
+        if topicChoice == '1':
+            get_all_topic(conn)
+        elif topicChoice == 'b':
+            print("Back to main...")
+            break
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='A command-line database application for connecting to SQL Server')
@@ -117,12 +217,21 @@ if __name__ == '__main__':
         elif choice == '2':
             boundary_choice()
         elif choice == '3':
-            street = "'" + input('Enter the street name: ') + "'"
+            education_choice()
         elif choice == '4':
-            print('Exiting...')
+            faith_choice()
+        elif choice == '5':
+            language_choice()
+        elif choice == '6':
+            non_response_rate_choice()
+        elif choice == '7':
+            response_choice()
+        elif choice == '8':
+            topic_choice()
+        elif choice == '9':
             break
         else:
-            print('Invalid choice. Please try again.')
+            print('Not a valid input, please try again')
 
     conn.close()
 
