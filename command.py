@@ -29,7 +29,13 @@ def get_population_belowAges_area(conn, age, area):
     query = f'select boundary_name, male, female from Boundary join Response on Boundary.boundary_id = Response.boundary join Ages on Response.response_id = Ages.response_id where max <= {age} and boundary_name = {area}'
     query_database(conn,query)
 
-def get_all_boundary():
+def get_all_boundary(conn):
+    query = 'select * from Boundary'
+    query_database(conn,query)
+
+def get_all_boundary_name(conn):
+    query = 'select distinct Boundary_name from Boundary'
+    query_database(conn,query)
 
 def fetch_all_tickets(conn):
     query = 'SELECT * FROM parking;'
@@ -74,6 +80,9 @@ def age_choice():
 def boundary_choice():
     boundary_chocie = input('Enter your choice (1-9): ')
     if boundary_chocie == '1':
+        get_all_boundary(conn)
+    elif boundary_chocie == '2':
+        get_all_boundary_name(conn)
 
 
 if __name__ == '__main__':
@@ -96,8 +105,9 @@ if __name__ == '__main__':
                 age_menu()
                 age_choice()
         elif choice == '2':
-            ticket_id = int(input('Enter the ticket ID: '))
-            fetch_ticket_by_id(conn, ticket_id)
+            while True:
+                boundary_menu()
+                boundary_choice()
         elif choice == '3':
             street = "'" + input('Enter the street name: ') + "'"
         elif choice == '4':
