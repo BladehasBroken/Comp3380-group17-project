@@ -9,28 +9,37 @@ def connect():
     conn = pyodbc.connect(f'DRIVER={{SQL Server}}; SERVER=localhost; DATABASE=group_project; Trusted_Connection=yes')
     return conn
 
+# execute the query and formatted result
 def query_database(conn, query):
     cursor = conn.cursor()
     cursor.execute(query)
 
+    print('execute the query...')
+
     result = cursor.fetchall()
     column_names = [column[0] for column in cursor.description]
     formatted_result = tabulate(result, headers=column_names, tablefmt='grid')
 
     print(formatted_result)
+    if result == []:
+        print('Sorry, no result found!')
 
     cursor.close()
 
+# execute the query with parameter and formatted result
 def query_para_database(conn, query, para):
     cursor = conn.cursor()
-    print(para)
     cursor.execute(query, para)
+
+    print('execute the query...')
 
     result = cursor.fetchall()
     column_names = [column[0] for column in cursor.description]
     formatted_result = tabulate(result, headers=column_names, tablefmt='grid')
 
     print(formatted_result)
+    if result == []:
+        print('Sorry, no result found!')
 
     cursor.close()
 
@@ -76,6 +85,12 @@ def get_total_response_bydegree(conn):
             'GROUP BY l.type;'
     query_database(conn, query)
 
+def get_response_number_degreeType_gender(conn):
+    query = 'SELECT D.type, D.gender, COUNT(E.responses) as total_responses ' \
+'FROM Education E JOIN Degree D ON E.education_id = D.education_id ' \
+'GROUP BY D.type, D.gender;'
+    query_database(conn,query)
+
 def get_all_faith(conn):
     query = 'select * from Faith'
     query_database(conn,query)
@@ -108,6 +123,12 @@ def get_non_response_rate_peryear(conn):
             'GROUP BY year;'
     query_database(conn,query)
 
+def get_top5_boundaries_non_response_rate(conn):
+    query = 'SELECT TOP 5 B.boundary_name, N.year, N.non_response_rate ' \
+            'FROM Boundary B JOIN Non_Response_Rate N ON B.boundary_id = N.boundary_id ' \
+            'ORDER BY N.non_response_rate DESC'
+    query_database(conn,query)
+
 def get_all_response(conn):
     query = 'select * from Response'
     query_database(conn,query)
@@ -121,6 +142,18 @@ def get_topic_number_byresponse(conn):
             'FROM Topic t INNER JOIN Response r ON t.id = r.topic ' \
             'GROUP BY t.topic_name'
     query_database(conn,query)
+
+def get_list_topic_name(conn):
+    query = 'select t.topic_name from Topic t'
+    query_database(conn,query)
+
+def get_boundary_responseNumber_byTopic(conn, para):
+    query = 'SELECT B.boundary_name, COUNT(R.response_id) as num_responses ' \
+            'FROM Response R JOIN Boundary B ON R.boundary = B.boundary_id ' \
+            'WHERE R.topic = (SELECT id FROM Topic WHERE topic_name = ?) ' \
+            'GROUP BY B.boundary_name ' \
+            'ORDER BY num_responses DESC'
+    query_para_database(conn,query,para)
 
 def main_menu():
     print('Choose an option:')
@@ -139,49 +172,53 @@ def age_menu():
     print('1. get all the age information')
     print('2. get population that below some age in one area ')
     print('3. get responses number that below some age and grouped by gender')
-    print('"b". Back to main menu')
+    print('b. Back to main menu')
 
 def boundary_menu():
     print('Choose an option:')
     print('1. get all the boundary information')
     print('2. get a list of boundary names ')
     print('3. Boundaries with top 5 amount of responses')
-    print('"b". Back to main menu')
+    print('b. Back to main menu')
 
 def educaiton_menu():
     print('Choose an option:')
     print('1. get all the education information')
     print('2. total number of responses by degree')
-    print('"b". Back to main menu')
+    print('3. get number of responses by degree type and gender')
+    print('b. Back to main menu')
 
 def faith_menu():
     print('Choose an option:')
     print('1. get all the faith information')
     print('2. get population by faith')
-    print('"b". Back to main menu')
+    print('b. Back to main menu')
 
 def language_menu():
     print('Choose an option:')
     print('1. get all the language information')
     print('2. get population by languages')
-    print('"b". Back to main menu')
+    print('b. Back to main menu')
 
 def non_response_rate_menu():
     print('Choose an option:')
     print('1. get all the non resposne rate information')
-    print('2. the average non-response rate per year')
-    print('"b". Back to main menu')
+    print('2. get the average non-response rate per year')
+    print('3. get the top 5 boundareis with highest non response rate')
+    print('b. Back to main menu')
 
 def response_menu():
     print('Choose an option:')
     print('1. get all the response information')
-    print('"b". Back to main menu')
+    print('b. Back to main menu')
 
 def topic_menu():
     print('Choose an option:')
     print('1. get all the topic information')
     print('2. amount of topic by with responses')
-    print('"b". Back to main menu')
+    print('3. get a list of topic name')
+    print('4. get boundaries with number of responses for specific topic')
+    print('b. Back to main menu')
 
 # do task when user select option under the age menu
 def age_choice():
@@ -200,6 +237,8 @@ def age_choice():
         elif ageChoice == 'b':
             print("Back to main...")
             break
+        else:
+            print('Not a valid input! Please try again')
 
 # do task when user select option under the age menu
 def boundary_choice():
@@ -215,6 +254,8 @@ def boundary_choice():
         elif boundaryChoice == 'b':
             print("Back to main...")
             break
+        else:
+            print('Not a valid input! Please try again')
 
 
 def education_choice():
@@ -225,9 +266,13 @@ def education_choice():
             get_all_education(conn)
         elif educationChoice == '2':
             get_total_response_bydegree(conn)
+        elif educationChoice == '3':
+            get_response_number_degreeType_gender(conn)
         elif educationChoice == 'b':
             print("Back to main...")
             break
+        else:
+            print('Not a valid input! Please try again')
 
 def faith_choice():
     while True:
@@ -240,6 +285,8 @@ def faith_choice():
         elif faithChoice == 'b':
             print("Back to main...")
             break
+        else:
+            print('Not a valid input! Please try again')
 
 def language_choice():
     while True:
@@ -253,6 +300,8 @@ def language_choice():
         elif languageChoice == 'b':
             print("Back to main...")
             break
+        else:
+            print('Not a valid input! Please try again')
 
 def non_response_rate_choice():
     while True:
@@ -262,9 +311,13 @@ def non_response_rate_choice():
             get_all_non_response_rate(conn)
         elif nonResponseRateChoice == '2':
             get_non_response_rate_peryear(conn)
+        elif nonResponseRateChoice == '3':
+            get_top5_boundaries_non_response_rate(conn)
         elif nonResponseRateChoice == 'b':
             print("Back to main...")
             break
+        else:
+            print('Not a valid input! Please try again')
 
 def response_choice():
     while True:
@@ -275,6 +328,8 @@ def response_choice():
         elif responseChoice == 'b':
             print("Back to main...")
             break
+        else:
+            print('Not a valid input! Please try again')
 
 def topic_choice():
     while True:
@@ -284,9 +339,16 @@ def topic_choice():
             get_all_topic(conn)
         elif topicChoice == '2':
             get_topic_number_byresponse(conn)
+        elif topicChoice == '3':
+            get_list_topic_name(conn)
+        elif topicChoice == '4':
+            para = input('Enter the topic name: ')
+            get_boundary_responseNumber_byTopic(conn,para)
         elif topicChoice == 'b':
             print("Back to main...")
             break
+        else:
+            print('Not a valid input! Please try again')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='A command-line database application for connecting to SQL Server')
