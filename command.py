@@ -21,13 +21,35 @@ def query_database(conn, query):
 
     cursor.close()
 
+def query_para_database(conn, query, para):
+    cursor = conn.cursor()
+    print(para)
+    cursor.execute(query, para)
+
+    result = cursor.fetchall()
+    column_names = [column[0] for column in cursor.description]
+    formatted_result = tabulate(result, headers=column_names, tablefmt='grid')
+
+    print(formatted_result)
+
+    cursor.close()
+
 def get_all_ages(conn):
     query = f'select * from Ages'
     query_database(conn, query)
 
 def get_population_belowAges_area(conn, age, area):
-    query = f'select boundary_name, male, female from Boundary join Response on Boundary.boundary_id = Response.boundary join Ages on Response.response_id = Ages.response_id where max <= {age} and boundary_name = {area}'
-    query_database(conn,query)
+    query = f'select boundary_name, male, female from Boundary join Response on Boundary.boundary_id = Response.boundary join Ages on Response.response_id = Ages.response_id where max <= ? and boundary_name = ?'
+    para = age, area
+    query_para_database(conn,query, para)
+
+def get_population_belowAges_gender(conn, age):
+    query = 'SELECT A.male, A.female, A.min AS min_age, A.max AS max_age ' \
+            'FROM Ages A JOIN Response R ON A.response_id = R.response_id ' \
+            'WHERE A.max < ? ' \
+            'GROUP BY A.male, A.female, A.min, A.max;'
+    para = age
+    query_para_database(conn, query, para)
 
 def get_all_boundary(conn):
     query = 'select * from Boundary'
@@ -58,12 +80,32 @@ def get_all_faith(conn):
     query = 'select * from Faith'
     query_database(conn,query)
 
+def get_population_faith(conn):
+    query = 'SELECT F.type, SUM(F.responses) as total_responses ' \
+            'FROM Faith F ' \
+            'GROUP BY F.type;'
+    query_database(conn,query)
+
 def get_all_language(conn):
     query = 'select * from Language'
     query_database(conn,query)
 
+def get_population_langugae(conn, para):
+    query = 'SELECT b.boundary_name, b.boundary_type, l.english, l.french, l.french_and_english, sl.type, sl.amount AS Secondary_Language_Amount ' \
+            'FROM Boundary b INNER JOIN Response r ON r.boundary = b.boundary_id INNER JOIN Language l ON l.response_id = r.response_id INNER JOIN Secondary_Language sl ON sl.response_id = r.response_id ' \
+            'WHERE b.boundary_name = ?'
+    para = para
+    query_para_database(conn,query,para)
+
+
 def get_all_non_response_rate(conn):
     query = 'select * from Non_Response_Rate'
+    query_database(conn,query)
+
+def get_non_response_rate_peryear(conn):
+    query = 'SELECT year, AVG(non_response_rate) as avg_non_response_rate ' \
+            'FROM Non_Response_Rate ' \
+            'GROUP BY year;'
     query_database(conn,query)
 
 def get_all_response(conn):
@@ -72,6 +114,12 @@ def get_all_response(conn):
 
 def get_all_topic(conn):
     query = 'select * from Topic'
+    query_database(conn,query)
+
+def get_topic_number_byresponse(conn):
+    query = 'SELECT t.topic_name, COUNT(r.response_id) AS Number ' \
+            'FROM Topic t INNER JOIN Response r ON t.id = r.topic ' \
+            'GROUP BY t.topic_name'
     query_database(conn,query)
 
 def main_menu():
@@ -90,6 +138,7 @@ def age_menu():
     print('Choose an option:')
     print('1. get all the age information')
     print('2. get population that below some age in one area ')
+    print('3. get responses number that below some age and grouped by gender')
     print('"b". Back to main menu')
 
 def boundary_menu():
@@ -108,16 +157,19 @@ def educaiton_menu():
 def faith_menu():
     print('Choose an option:')
     print('1. get all the faith information')
+    print('2. get population by faith')
     print('"b". Back to main menu')
 
 def language_menu():
     print('Choose an option:')
     print('1. get all the language information')
+    print('2. get population by languages')
     print('"b". Back to main menu')
 
 def non_response_rate_menu():
     print('Choose an option:')
     print('1. get all the non resposne rate information')
+    print('2. the average non-response rate per year')
     print('"b". Back to main menu')
 
 def response_menu():
@@ -128,6 +180,7 @@ def response_menu():
 def topic_menu():
     print('Choose an option:')
     print('1. get all the topic information')
+    print('2. amount of topic by with responses')
     print('"b". Back to main menu')
 
 # do task when user select option under the age menu
@@ -139,8 +192,11 @@ def age_choice():
             get_all_ages(conn)
         elif ageChoice == '2':
             age = int(input('Enter the age: '))
-            area = "'" + input('Enter the boundary name: ') + "'"
+            area = input('Enter the boundary name: ')
             get_population_belowAges_area(conn, age, area)
+        elif ageChoice == '3':
+            age = int(input('Enter the age: '))
+            get_population_belowAges_gender(conn, age)
         elif ageChoice == 'b':
             print("Back to main...")
             break
@@ -179,6 +235,8 @@ def faith_choice():
         faithChoice = input('Enter your choice (1-9): ')
         if faithChoice == '1':
             get_all_faith(conn)
+        elif faithChoice == '2':
+            get_population_faith(conn)
         elif faithChoice == 'b':
             print("Back to main...")
             break
@@ -189,6 +247,9 @@ def language_choice():
         languageChoice = input('Enter your choice (1-9): ')
         if languageChoice == '1':
             get_all_language(conn)
+        elif languageChoice == '2':
+            para = input('Enter the boundary name: ')
+            get_population_langugae(conn,para)
         elif languageChoice == 'b':
             print("Back to main...")
             break
@@ -199,6 +260,8 @@ def non_response_rate_choice():
         nonResponseRateChoice = input('Enter your choice (1-9): ')
         if nonResponseRateChoice == '1':
             get_all_non_response_rate(conn)
+        elif nonResponseRateChoice == '2':
+            get_non_response_rate_peryear(conn)
         elif nonResponseRateChoice == 'b':
             print("Back to main...")
             break
@@ -219,6 +282,8 @@ def topic_choice():
         topicChoice = input('Enter your choice (1-9): ')
         if topicChoice == '1':
             get_all_topic(conn)
+        elif topicChoice == '2':
+            get_topic_number_byresponse(conn)
         elif topicChoice == 'b':
             print("Back to main...")
             break
