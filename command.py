@@ -37,9 +37,22 @@ def get_all_boundary_name(conn):
     query = 'select distinct Boundary_name from Boundary'
     query_database(conn,query)
 
+def get_top5_response_boundary(conn):
+    query = 'SELECT TOP 5 Boundary.boundary_name, Boundary.boundary_type, COUNT(Response.boundary) AS Responses ' \
+            'FROM Boundary INNER JOIN Response ON Boundary.boundary_id = Response.boundary ' \
+            'GROUP BY Boundary.boundary_name,  Boundary.boundary_type ' \
+            'ORDER BY Responses DESC'
+    query_database(conn, query)
+
 def get_all_education(conn):
     query = 'select * from Education'
     query_database(conn,query)
+
+def get_total_response_bydegree(conn):
+    query = 'SELECT l.type, SUM(e.responses) AS ResponseNumber ' \
+            'FROM Level l INNER JOIN Education e ON l.education_id = e.education_id ' \
+            'GROUP BY l.type;'
+    query_database(conn, query)
 
 def get_all_faith(conn):
     query = 'select * from Faith'
@@ -71,6 +84,7 @@ def main_menu():
     print('6. Non_Response_Rate')
     print('7. Response')
     print('8. Topic')
+    print('9. Exit the program')
 
 def age_menu():
     print('Choose an option:')
@@ -82,31 +96,39 @@ def boundary_menu():
     print('Choose an option:')
     print('1. get all the boundary information')
     print('2. get a list of boundary names ')
+    print('3. Boundaries with top 5 amount of responses')
     print('"b". Back to main menu')
 
 def educaiton_menu():
     print('Choose an option:')
     print('1. get all the education information')
+    print('2. total number of responses by degree')
+    print('"b". Back to main menu')
 
 def faith_menu():
     print('Choose an option:')
     print('1. get all the faith information')
+    print('"b". Back to main menu')
 
 def language_menu():
     print('Choose an option:')
     print('1. get all the language information')
+    print('"b". Back to main menu')
 
 def non_response_rate_menu():
     print('Choose an option:')
     print('1. get all the non resposne rate information')
+    print('"b". Back to main menu')
 
 def response_menu():
     print('Choose an option:')
     print('1. get all the response information')
+    print('"b". Back to main menu')
 
 def topic_menu():
     print('Choose an option:')
     print('1. get all the topic information')
+    print('"b". Back to main menu')
 
 # do task when user select option under the age menu
 def age_choice():
@@ -132,6 +154,8 @@ def boundary_choice():
             get_all_boundary(conn)
         elif boundaryChoice == '2':
             get_all_boundary_name(conn)
+        elif boundaryChoice == '3':
+            get_top5_response_boundary(conn)
         elif boundaryChoice == 'b':
             print("Back to main...")
             break
@@ -143,6 +167,8 @@ def education_choice():
         educationChoice = input('Enter your choice (1-9): ')
         if educationChoice == '1':
             get_all_education(conn)
+        elif educationChoice == '2':
+            get_total_response_bydegree(conn)
         elif educationChoice == 'b':
             print("Back to main...")
             break
@@ -229,9 +255,10 @@ if __name__ == '__main__':
         elif choice == '8':
             topic_choice()
         elif choice == '9':
+            print('Exiting...')
             break
         else:
-            print('Not a valid input, please try again')
+            print('Not a valid input! Please try again')
 
     conn.close()
 
