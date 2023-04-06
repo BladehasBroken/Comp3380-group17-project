@@ -46,7 +46,7 @@ def get_all_ages(conn):
     query_database(conn, query)
 
 def get_population_belowAges_area(conn, age, area):
-    query = f'select boundary_name, male, female from Boundary join Response on Boundary.boundary_id = Response.boundary join Ages on Response.response_id = Ages.response_id where max <= ? and boundary_name = ?'
+    query = 'select boundary_name, male, female from Boundary join Response on Boundary.boundary_id = Response.boundary join Ages on Response.response_id = Ages.response_id where max <= ? and boundary_name = ?'
     para = age, area
     query_para_database(conn,query, para)
 
@@ -99,7 +99,7 @@ def get_population_faith(conn):
             'GROUP BY F.type;'
     query_database(conn,query)
 
-def get_faithPopulation_boundary(conn, para):
+def get_faithPopulation_boundary(conn):
     query = 'SELECT b.boundary_name, SUM(f.responses) AS #OfResponses ' \
             'FROM Faith f INNER JOIN Response r ON f.response_id = r.response_id INNER JOIN Boundary b ON r.boundary = b.boundary_id ' \
             'GROUP BY b.boundary_name'
