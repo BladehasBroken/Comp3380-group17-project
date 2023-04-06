@@ -16,7 +16,7 @@ and another application to insert the CSV data into the database
 (Note: If you already have this database, please delete the current one and create a new one)  
 2. For importing the CSV files into the database there is a Java application that uses
 Gradle and Java 17 while assuming that you have the auth dll setup for security.  
-3. Unzip the "COMP_3380_Project_java.zip"
+3. Unzip the "COMP_3380_Project_java.zip
 
 The path to the COMP_3380_Project in "app.java" needs to be set,  
 ```java
