@@ -8,6 +8,7 @@ and another application to insert the CSV data into the database
 
 ## Prerequisites
 * Java and Python Installed
+* JDBC and Pyodbc Installed
 * A Windows Device
 
 ## Database Setup Instruction
@@ -16,14 +17,14 @@ and another application to insert the CSV data into the database
 2. For importing the CSV files into the database there is a Java application that uses
 Gradle and Java 17 while assuming that you have the auth dll setup for security.  
 
-The path to the COMP_3380_Project needs to be set on line 17,  
+The path to the COMP_3380_Project in "app.java" needs to be set,  
 ```java
 private static final String PATH =
       "C:/Users/Bruce/IdeaProjects/COMP_3380_Project";
 ```
 and then that PATH should be directory were COMP_3380_Project is.
 
-On line 19 There is a file that contains the connection string for interacting with the
+ "app.java" also contains the connection string for interacting with the
 database please modify it to your environment.  
 ```java
     final var connectionUrl=
