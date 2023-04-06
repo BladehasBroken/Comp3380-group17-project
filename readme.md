@@ -36,13 +36,13 @@ calling.
 ```
 
 ** Note since the tool is designed against using relative paths there is a chance that it fails to
-import the data within your environment with that we've provided an SQL Script to apply against your
-database to get the data imported.
+import the data within your environment with that we've provided an SQL Script to apply against your database to get the data imported.
 **
 ## Use Client Instruction
 This is the CLI application which is written in Python that allows for easy querying   of the database and provides many analytic driven queries. It assumes that you are
 running on a windows based host.
 1. Find the "command.exe", and double click to run it.  
+(Note: If you can't run command.exe, you can run "python command.py" in your terminal. Make sure you intalled "tabulate" package)
 2. Choose an option by type different number.  
 ![avatar](main.png)  
 3. Each option contain more options, and you can enter "b" to go back to main menu  
