@@ -239,7 +239,7 @@ def topic_menu():
 def age_choice():
     while True:
         age_menu()
-        ageChoice = input('Enter your choice (1-9): ')
+        ageChoice = input('Enter your choice (1-3 and b): ')
         if ageChoice == '1':
             get_all_ages(conn)
         elif ageChoice == '2':
@@ -259,7 +259,7 @@ def age_choice():
 def boundary_choice():
     while True:
         boundary_menu()
-        boundaryChoice = input('Enter your choice (1-9): ')
+        boundaryChoice = input('Enter your choice (1-3 and b): ')
         if boundaryChoice == '1':
             get_all_boundary(conn)
         elif boundaryChoice == '2':
@@ -276,7 +276,7 @@ def boundary_choice():
 def education_choice():
     while True:
         educaiton_menu()
-        educationChoice = input('Enter your choice (1-9): ')
+        educationChoice = input('Enter your choice (1-3 and b): ')
         if educationChoice == '1':
             get_all_education(conn)
         elif educationChoice == '2':
@@ -292,7 +292,7 @@ def education_choice():
 def faith_choice():
     while True:
         faith_menu()
-        faithChoice = input('Enter your choice (1-9): ')
+        faithChoice = input('Enter your choice (1-3 and b): ')
         if faithChoice == '1':
             get_all_faith(conn)
         elif faithChoice == '2':
@@ -308,7 +308,7 @@ def faith_choice():
 def language_choice():
     while True:
         language_menu()
-        languageChoice = input('Enter your choice (1-9): ')
+        languageChoice = input('Enter your choice (1-2 and b): ')
         if languageChoice == '1':
             get_all_language(conn)
         elif languageChoice == '2':
@@ -323,7 +323,7 @@ def language_choice():
 def non_response_rate_choice():
     while True:
         non_response_rate_menu()
-        nonResponseRateChoice = input('Enter your choice (1-9): ')
+        nonResponseRateChoice = input('Enter your choice (1-3 and b): ')
         if nonResponseRateChoice == '1':
             get_all_non_response_rate(conn)
         elif nonResponseRateChoice == '2':
@@ -339,7 +339,7 @@ def non_response_rate_choice():
 def response_choice():
     while True:
         response_menu()
-        responseChoice = input('Enter your choice (1-9): ')
+        responseChoice = input('Enter your choice (1-2 and b): ')
         if responseChoice == '1':
             get_all_response(conn)
         elif responseChoice == '2':
@@ -353,7 +353,7 @@ def response_choice():
 def topic_choice():
     while True:
         topic_menu()
-        topicChoice = input('Enter your choice (1-9): ')
+        topicChoice = input('Enter your choice (1-4 and b): ')
         if topicChoice == '1':
             get_all_topic(conn)
         elif topicChoice == '2':
@@ -375,6 +375,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     conn = connect()
+
+    print('Welcome to Cenesus Database for Winnipeg in 2011 and 2016')
 
     while True:
         main_menu()
