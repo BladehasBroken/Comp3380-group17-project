@@ -19,7 +19,7 @@ Gradle and Java 17 while assuming that you have the auth dll setup for security.
 The path to the COMP_3380_Project needs to be set on line 17,  
 ```java
 private static final String PATH =
-      "C:/Users/Bruce/IdeaProjects/COMP_3380_Project/";
+      "C:/Users/Bruce/IdeaProjects/COMP_3380_Project";
 ```
 and then that PATH should be directory were COMP_3380_Project is.
 
