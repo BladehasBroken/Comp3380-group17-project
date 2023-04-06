@@ -1,11 +1,9 @@
 import argparse
 import pyodbc
 from tabulate import tabulate
-import sys
-import keyboard
+
 
 def connect():
-    #connection_string = f'DRIVER={DESKTOP-TEFQKFL};SERVER={server};DATABASE={database};UID={username};PWD={password}'
     conn = pyodbc.connect(f'DRIVER={{SQL Server}}; SERVER=localhost; DATABASE=group_project; Trusted_Connection=yes')
     return conn
 
@@ -86,9 +84,9 @@ def get_total_response_bydegree(conn):
     query_database(conn, query)
 
 def get_response_number_degreeType_gender(conn):
-    query = 'SELECT D.type, D.gender, COUNT(E.responses) as total_responses ' \
-'FROM Education E JOIN Degree D ON E.education_id = D.education_id ' \
-'GROUP BY D.type, D.gender;'
+    query = 'SELECT D.type, D.gender, COUNT(DISTINCT E.responses) as total_responses ' \
+            'FROM Education E JOIN Degree D ON E.education_id = D.education_id ' \
+            'GROUP BY D.type, D.gender;'
     query_database(conn,query)
 
 def get_all_faith(conn):
@@ -100,6 +98,12 @@ def get_population_faith(conn):
             'FROM Faith F ' \
             'GROUP BY F.type;'
     query_database(conn,query)
+
+def get_faithPopulation_boundary(conn, para):
+    query = 'SELECT b.boundary_name, SUM(f.responses) AS #OfResponses ' \
+            'FROM Faith f INNER JOIN Response r ON f.response_id = r.response_id INNER JOIN Boundary b ON r.boundary = b.boundary_id ' \
+            'GROUP BY b.boundary_name'
+    query_database(conn, query)
 
 def get_all_language(conn):
     query = 'select * from Language'
@@ -131,6 +135,15 @@ def get_top5_boundaries_non_response_rate(conn):
 
 def get_all_response(conn):
     query = 'select * from Response'
+    query_database(conn,query)
+
+def get_responseNumber_degreeType_boundary(conn):
+    query = 'SELECT b.boundary_name, l.type, e.responses ' \
+            'FROM Level l ' \
+                'INNER JOIN Education e ON l.education_id = e.education_id ' \
+                'INNER JOIN Response r on e.response_id = r.response_id ' \
+                'INNER JOIN Boundary b on b.boundary_id = r.boundary ' \
+            'WHERE e.responses > 0'
     query_database(conn,query)
 
 def get_all_topic(conn):
@@ -192,6 +205,7 @@ def faith_menu():
     print('Choose an option:')
     print('1. get all the faith information')
     print('2. get population by faith')
+    print('3. get number of faith response by bundary')
     print('b. Back to main menu')
 
 def language_menu():
@@ -210,6 +224,7 @@ def non_response_rate_menu():
 def response_menu():
     print('Choose an option:')
     print('1. get all the response information')
+    print('2. get response number by degree type and boundary')
     print('b. Back to main menu')
 
 def topic_menu():
@@ -282,6 +297,8 @@ def faith_choice():
             get_all_faith(conn)
         elif faithChoice == '2':
             get_population_faith(conn)
+        elif faithChoice == '3':
+            get_faithPopulation_boundary(conn)
         elif faithChoice == 'b':
             print("Back to main...")
             break
@@ -325,6 +342,8 @@ def response_choice():
         responseChoice = input('Enter your choice (1-9): ')
         if responseChoice == '1':
             get_all_response(conn)
+        elif responseChoice == '2':
+            get_responseNumber_degreeType_boundary(conn)
         elif responseChoice == 'b':
             print("Back to main...")
             break
@@ -352,10 +371,6 @@ def topic_choice():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='A command-line database application for connecting to SQL Server')
-    #parser.add_argument('-server', required=True, help='The SQL Server address')
-    #parser.add_argument('-database', required=True, help='The database name')
-    #parser.add_argument('-username', required=True, help='The username for the SQL Server connection')
-    #parser.add_argument('-password', required=True, help='The password for the SQL Server connection')
 
     args = parser.parse_args()
 
